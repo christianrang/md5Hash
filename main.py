@@ -8,11 +8,9 @@ Example:
   Correct md5 hash: 0800fc577294c34e0b28ad2839435945
   Comparing hashes...
   Hashes match!
-
-TODO:
-  * uhhhh write the actual code???
 """
 import subprocess
+import re
 
 __authors__= ["T", "P"]
 __version__= 1
@@ -36,9 +34,12 @@ def get_input_md5_hash():
   Returns:
     str:   md5 hash inputted from the user
   """
-  md5_hash=input("enter_md5_hash: ")
-  print("Md_5_hash is "  + md5_hash)
-  return md5_hash
+  while True:
+    md5_hash=input("enter_md5_hash: ")
+    if verify_md5_hash(md5_hash):
+      return md5_hash
+    else:
+      print("Inputted value was not a md5 hash")
 
 def verify_md5_hash(md5_hash):
   """
@@ -50,7 +51,10 @@ def verify_md5_hash(md5_hash):
   Returns:
     True if md5 hash, false if not
   """
-
+  if re.match('[a-fA-F0-9]{32}', md5_hash):
+    return True
+  else:
+    return False
 
 def compare_md5_hashes(input_hash, file_hash):
   """
@@ -63,16 +67,15 @@ def compare_md5_hashes(input_hash, file_hash):
   Returns:
     True if md5 hashes match, false if not
   """
-
   if input_hash==file_hash:
-    print("file hash match hoooray!")
-    print(f"hash: {input_hash}")
-    return(True)
-
-
+    return True
   else:
-    print("NO MATCH. NO DICE. COULD BE MALICIOUS. UHOH")
-    return(False)
+    return False 
 
 if __name__ == "__main__":
-  compare_md5_hashes(input_hash=get_input_md5_hash(), file_hash=get_files_md5_hash('test.txt'))
+  users_md5_hash = get_input_md5_hash()
+  print("Comparing hashes...")
+  if compare_md5_hashes(input_hash=users_md5_hash, file_hash=get_files_md5_hash('test.txt')):
+    print("Hashes match!")
+  else:
+    print("Something is fishy here... the hashes don't match")
